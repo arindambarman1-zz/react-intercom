@@ -16,6 +16,7 @@ export const IntercomAPI = (...args) => {
 export default class Intercom extends Component {
   static propTypes = {
     appID: PropTypes.string.isRequired,
+    apiBase: PropTypes.string,
   };
 
   static displayName = 'Intercom';
@@ -25,6 +26,7 @@ export default class Intercom extends Component {
 
     const {
       appID,
+      apiBase,
       ...otherProps,
     } = props;
 
@@ -33,7 +35,7 @@ export default class Intercom extends Component {
     }
 
     if (!window.Intercom) {
-      (function(w, d, id, s, x) {
+      (function(w, d, id, base, s, x) {
         function i() {
             i.c(arguments);
         }
@@ -44,12 +46,12 @@ export default class Intercom extends Component {
         w.Intercom = i;
         s = d.createElement('script');
         s.async = 1;
-        s.src = 'https://widget.intercom.io/widget/' + id;
+        s.src = (base || 'https://widget.intercom.io/widget/') + id;
         d.head.appendChild(s);
-      })(window, document, appID);
+      })(window, document, appID, apiBase);
     }
 
-    window.intercomSettings = { ...otherProps, app_id: appID };
+    window.intercomSettings = { ...otherProps, app_id: appID, api_base: apiBase };
 
     if (window.Intercom) {
       window.Intercom('boot', otherProps);
@@ -59,12 +61,13 @@ export default class Intercom extends Component {
   componentWillReceiveProps(nextProps) {
     const {
       appID,
+      apiBase,
       ...otherProps,
     } = nextProps;
 
     if (!canUseDOM) return;
 
-    window.intercomSettings = { ...otherProps, app_id: appID };
+    window.intercomSettings = { ...otherProps, app_id: appID, api_base: apiBase };
 
     if (window.Intercom) {
       if (this.loggedIn(this.props) && !this.loggedIn(nextProps)) {
