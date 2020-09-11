@@ -35,7 +35,7 @@ export default class Intercom extends Component {
     }
 
     if (!window.Intercom) {
-      (function(w, d, id, base, s, x) {
+      (function(w, d, id, s, x) {
         function i() {
             i.c(arguments);
         }
@@ -46,9 +46,9 @@ export default class Intercom extends Component {
         w.Intercom = i;
         s = d.createElement('script');
         s.async = 1;
-        s.src = base ? base : ('https://widget.intercom.io/widget/' + id);
+        s.src = 'https://widget.intercom.io/widget/' + id;
         d.head.appendChild(s);
-      })(window, document, appID, apiBase);
+      })(window, document, appID);
     }
 
     window.intercomSettings = { ...otherProps, app_id: appID, api_base: apiBase };
